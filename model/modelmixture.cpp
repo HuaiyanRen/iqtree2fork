@@ -1243,6 +1243,8 @@ void ModelMixture::initMixture(string orig_model_name, string model_name, string
 	fix_prop = false;
 	optimizing_submodels = false;
     optimizing_gtr = false;
+    bool init_weights = false;
+    bool init_freqs =false;
 
 	if (freq == FREQ_MIXTURE) {
 		for (m = 0, cur_pos = 0; cur_pos < freq_params.length(); m++) {
@@ -1347,7 +1349,12 @@ void ModelMixture::initMixture(string orig_model_name, string model_name, string
 			} else {
 				rate = convert_double_with_distribution(this_name.substr(pos_rate+1, pos_weight-pos_rate-1).c_str(), true);
 				weight = convert_double_with_distribution(this_name.substr(pos_weight+1).c_str(), true);
-				fix_prop = true;
+                if (Params::getInstance().opt_input) {
+                    fix_prop = false; // the input parameters are only initial values
+                    init_weights = true;
+                } else {
+                    fix_prop = true;
+                }
 				if (weight <= 0.0)
 					outError("Mixture component weight is negative!");
 			}
@@ -1401,7 +1408,12 @@ void ModelMixture::initMixture(string orig_model_name, string model_name, string
                     size_t pos_f = this_name.find("{", fpos);
                     size_t pos_t = this_name.find("}", fpos);
                     if (pos_t != string::npos && pos_t-fpos > 1) {
-                        model_freq = FREQ_USER_DEFINED;
+                        if (Params::getInstance().opt_input) {
+                            model_freq = FREQ_ESTIMATE; // the input parameters are only initial values
+                            init_freqs = true;
+                        } else {
+                            model_freq = FREQ_USER_DEFINED;
+                        }
                         freq_params = this_name.substr(pos_f+1,pos_t-pos_f-1);
                     } else {
                         outError("The user defined frequency model is incorrect");
@@ -1426,6 +1438,10 @@ void ModelMixture::initMixture(string orig_model_name, string model_name, string
             }
             
 			model = (ModelMarkov*)createModel(this_name, models_block, model_freq, freq_params, tree);
+            if (init_freqs){
+                model->readStateFreq(freq_params);
+                init_freqs = false;
+            }
 			model->total_num_subst = rate;
             if (nxsmodel_freq_name.length() > 0) {
                 model->name += "+F" + nxsmodel_freq_name + "";
@@ -1440,6 +1456,15 @@ void ModelMixture::initMixture(string orig_model_name, string model_name, string
 //			name += model->name;
 			full_name += model->name;
 		}
+        // show the initial frequencies
+        double *state_freqs = new double[model->num_states];
+        model->getStateFrequency(state_freqs);
+        int j;
+        cout << "class " << m+1 << " initial freq:";
+        for (j = 0; j < model->num_states; j++)
+            cout << " " << state_freqs[j];
+        cout << endl;
+        delete[] state_freqs;
 	}
 
 //	name += CLOSE_BRACKET;
@@ -1451,7 +1476,7 @@ void ModelMixture::initMixture(string orig_model_name, string model_name, string
 
 	double sum = 0.0;
 	int i;
-	if (fix_prop) {
+	if (fix_prop || init_weights) {
 		for (i = 0, sum = 0.0; i < nmixtures; i++) {
 			prop[i] = weights[i];
 			sum += prop[i];
@@ -2169,7 +2194,8 @@ double ModelMixture::optimizeParameters(double gradient_epsilon) {
     int dim = getNDim();
     double score = 0.0;
     IntVector params;
-    int i, j, ncategory = size();
+    int i, j;
+    int ncategory = size();
     if (dim != 0) {
         score = 1.0;
     }
@@ -2177,6 +2203,26 @@ double ModelMixture::optimizeParameters(double gradient_epsilon) {
     if (!phylo_tree->getModelFactory()->unobserved_ptns.empty()) {
         outError("Mixture model +ASC is not supported yet. Contact author if needed.");
     }
+
+    // show the class weights
+    cout << "weights = (";
+    for (int i=0; i<size(); i++) {
+        if (i>0)
+            cout << ",";
+        cout  << prop[i];
+    }
+    cout  << ")" << endl;
+
+    // show the frequency vectors
+    double state_freq[num_states];
+    for (i = 0; i < ncategory; i++) {
+        at(i)->getStateFrequency(state_freq);
+        cout << "Class " << i+1 << "'s freq:";
+        for (j = 0; j < num_states; j++)
+            cout << " " << state_freq[j];
+        cout << endl;
+    }
+
     // Fused model can use EM algorithm
     // Non-Fused model can only use BFGS algorithm unless optimize_alg_qmix = "EM"
     if (isFused() || Params::getInstance().optimize_linked_gtr || Params::getInstance().optimize_alg_qmix == "EM") {
@@ -2234,7 +2280,7 @@ double ModelMixture::optimizeParameters(double gradient_epsilon) {
 				at(i)->scaleStateFreq(true);
 			}
 		}
-		
+		/*
 		if (verbose_mode >= VB_DEBUG) {
 			// show the frequency vectors
 			double state_freq[num_states];
@@ -2246,6 +2292,7 @@ double ModelMixture::optimizeParameters(double gradient_epsilon) {
 				cout << endl;
 			}
 		}
+        */
     }
 
     // now rescale Q matrices to have proper interpretation of branch lengths
