@@ -1,0 +1,192 @@
+{
+	"archive" : {},
+	"artifacts" : 
+	[
+		{
+			"path" : "libkernelsse.a"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"add_definitions",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 713,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 121,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 64,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 79,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 670,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 135,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 392,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 110,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 111,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 112,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 644,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : " -std=c++11 -fopenmp -pthread  -O0 -g -fno-inline-functions -fno-inline-functions-called-once -fno-default-inline -fno-inline -fdiagnostics-color=always   -I/usr/include/eigen3 -I/usr/include"
+				},
+				{
+					"fragment" : "-D__SSE3 -msse3"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 2,
+					"define" : "IQTREE_TERRAPHAST"
+				},
+				{
+					"backtrace" : 3,
+					"define" : "IQ_TREE"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "USE_BOOST"
+				},
+				{
+					"backtrace" : 5,
+					"define" : "USE_BOOSTER"
+				},
+				{
+					"backtrace" : 6,
+					"define" : "USE_LSD2"
+				},
+				{
+					"backtrace" : 7,
+					"define" : "_USE_PTHREADS"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 8,
+					"path" : "/home/huaiyan/iqtree2fork"
+				},
+				{
+					"backtrace" : 9,
+					"path" : "/home/huaiyan/iqtree2fork/yaml-cpp/include"
+				},
+				{
+					"backtrace" : 10,
+					"path" : "/home/huaiyan/iqtree2fork/after"
+				},
+				{
+					"backtrace" : 10,
+					"path" : "/home/huaiyan/iqtree2fork/system"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/home/huaiyan/iqtree2fork/cmake-build-debug"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"id" : "kernelsse::@6890427a1f51a3e7e1df",
+	"name" : "kernelsse",
+	"nameOnDisk" : "libkernelsse.a",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "tree/phylokernelsse.cpp",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}

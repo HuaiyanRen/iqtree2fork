@@ -1215,6 +1215,7 @@ void parseArg(int argc, char *argv[], Params &params) {
     params.optimize_from_given_params = false;
     params.optimize_alg_qmix = "BFGS";
     params.estimate_init_freq = 0;
+    params.opt_input = false;
 
     // defaults for new options -JD
     params.optimize_linked_gtr = false;
@@ -1670,6 +1671,11 @@ void parseArg(int argc, char *argv[], Params &params) {
                 params.estimate_init_freq = convert_int(argv[cnt]);
                 if (params.estimate_init_freq > 2)
                     throw "Use -init_nucl_freq <0|1|2>";
+                continue;
+            }
+
+            if (strcmp(argv[cnt], "-opt_input_val") == 0) {
+                params.opt_input = true;
                 continue;
             }
 

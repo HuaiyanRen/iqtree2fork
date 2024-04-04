@@ -1759,6 +1759,11 @@ public:
      */
     int estimate_init_freq;
 
+    /**
+     * optimise the input parameters rather than fix the input values
+     */
+    bool opt_input;
+
     //new params added -JD
     /** TRUE if you want to exchange the rate matrix for an optimized GTR matrix */
     bool optimize_linked_gtr;
